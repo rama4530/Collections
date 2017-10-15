@@ -1,6 +1,6 @@
 package demoOnCollections;
 
-public class NareshAssiEmpoyee {
+public class Empoyee {
 	int empno;
 	 String ename;
 	 double sal;
