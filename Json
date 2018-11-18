@@ -1,0 +1,62 @@
+package demo1;
+
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.testng.Assert;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.parsing.Parser;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
+
+import static io.restassured.RestAssured.given;
+
+public class RestTest {
+
+	public static Response doGetRequest(String endpoint) {
+		RestAssured.defaultParser = Parser.JSON;
+
+		return
+				given().headers("Content-Type", ContentType.XML, "Accept", ContentType.JSON).
+				when().get(endpoint).
+				then().contentType(ContentType.JSON).extract().response();
+	}
+
+
+	public static JSONObject getJSONObjectFromFile(String jsonString) throws JSONException {
+		return new JSONObject(jsonString);
+	}
+	
+	public static boolean objectExists(JSONObject jsonObject, String key) {
+		Object o;
+		try {
+			o = jsonObject.get(key);
+		} catch(Exception e) {
+			System.out.println(key+" is not available in the response");
+			return false;
+		}
+		System.out.println(key+" is available in the response");
+		return o != null;
+	}
+
+
+	public static void main(String[] args) throws JSONException {
+		Response response = doGetRequest("http://restapi.demoqa.com/utilities/weather/city/Hyderabad");
+		// Retrieve the body of the Response
+		ResponseBody body = response.getBody();
+		// To check for sub string presence get the Response body as a String.
+		// Do a String.contains
+		String bodyAsString = body.asString();
+			
+		JSONObject obj = RestTest.getJSONObjectFromFile(bodyAsString);
+		String[] names = JSONObject.getNames(obj);
+		for(String string : names) {
+			objectExists(obj,string);
+		}
+
+	}
+}
