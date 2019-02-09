@@ -1,0 +1,52 @@
+package demoONXML;
+
+import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+public class XMLToProperties {
+
+	@Test
+	public void test() throws InvalidPropertiesFormatException, IOException
+	{
+		String inputFile = "C:\\Users\\ramakrishna\\eclipse-workspace\\demoONXML\\src\\main\\resources\\input.xml";
+		//verifyTag(inputFile,"Name","Google");
+		
+		 verifyTag(inputFile,"salary","100000");
+		 
+		/* verifyTag(inputFile,"Company","Google");
+		 */	     
+	}
+
+	public void verifyTag(String inputFile,String element,String value) {
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			// The Document interface represents the entire HTML or XML document. Conceptually, it is the root of the document tree, and provides the primary access to the document's data.
+			Document doc = factory.newDocumentBuilder().parse(inputFile);
+			// Returns a NodeList of all the Elements in document order with a given tag name and are contained in the document.
+			NodeList nodes = doc.getElementsByTagName(element);
+System.out.println(nodes.getLength());
+			if(nodes.getLength()>1) {
+				for(int i=0;i<nodes.getLength();i++) {
+					String str=nodes.item(i).getTextContent();
+					System.out.println(i+" value is="+str);
+					if(str.equalsIgnoreCase(value))
+						Assert.assertEquals(nodes.item(i).getTextContent().trim(), value);
+				}
+			}else {
+				
+				System.out.println("else blocke value is= "+ nodes.item(0).getTextContent());
+				Assert.assertEquals(nodes.item(0).getTextContent(), value);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+	}
+}
